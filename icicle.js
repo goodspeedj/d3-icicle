@@ -1,7 +1,7 @@
 function makeIcicle() {
 
-  const height = 800
-  const width  = 1000
+  const height = 700
+  const width  = 900
   const mapDepth = 4
   let rootNode
 
@@ -30,8 +30,6 @@ function makeIcicle() {
         return b.height - a.height || b.value - a.value;
       });
 */
-
-    console.log(rootNode.descendants())
 
     // bind the data to the nodes
     let cell = d3.select('svg')
@@ -124,6 +122,8 @@ function makeIcicle() {
   }
 
   function labelVisible(d) {
+    console.log(d.y1 + " <= " + width + " && " + d.y0 + " >= 0 && " + d.x1 + " - " + d.x0 + " > 16")
+    console.log(d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16)
     return d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16;
   }
 
