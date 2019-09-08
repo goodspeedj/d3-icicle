@@ -63,8 +63,8 @@ function makeIcicle() {
       .attr("height", d => rectHeight(d))
       .attr("fill-opacity", 0.6)
       .attr("fill", d => {
-        if (!d.depth) return "#ccc";
-        while (d.depth > 1) d = d.parent;
+        //if (!d.depth) return "#ccc";
+        //while (d.depth > 1) d = d.parent;
         return d3.interpolateRdYlGn(d.data.health);
       })
       .style("cursor", "pointer")
@@ -122,8 +122,6 @@ function makeIcicle() {
   }
 
   function labelVisible(d) {
-    console.log(d.y1 + " <= " + width + " && " + d.y0 + " >= 0 && " + d.x1 + " - " + d.x0 + " > 16")
-    console.log(d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16)
     return d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16;
   }
 
