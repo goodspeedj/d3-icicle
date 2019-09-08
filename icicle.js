@@ -21,52 +21,22 @@ function makeIcicle() {
     rootNode = partition(data)
     let focus = rootNode
 
-    /* sum and sort the root node values
-    rootNode
-      .sum(function(d) {
-        return d.value;
-      })
-      .sort(function(a, b) {
-        return b.height - a.height || b.value - a.value;
-      });
-*/
-
     // bind the data to the nodes
     let cell = d3.select('svg')
       .attr('width', width)
       .attr('height', height)
       .selectAll('g')
-      .data(rootNode.descendants(), function(d) {
-        return d.data.name;
-      })
+      .data(rootNode.descendants(), d => d.data.name)
       .join("g")
         .attr("transform", d => `translate(${d.y0},${d.x0})`);
-    /*
-    cell
-      .exit()
-      .remove()
 
-    let newNodes = nodes
-      .enter()
-      .filter(function(d) {
-        return d.depth < mapDepth;
-      })
-      .append('g')
-      .attr('transform', function(d) {
-        return 'translate(' + [d.x0, d.y0] + ')'
-      })
-    */
 
     const rect = cell
       .append('rect')
       .attr("width", d => d.y1 - d.y0 - 1)
       .attr("height", d => rectHeight(d))
       .attr("fill-opacity", 0.6)
-      .attr("fill", d => {
-        //if (!d.depth) return "#ccc";
-        //while (d.depth > 1) d = d.parent;
-        return d3.interpolateRdYlGn(d.data.health);
-      })
+      .attr("fill", d => d3.interpolateRdYlGn(d.data.health))
       .style("cursor", "pointer")
       .on("click", clicked);
 
@@ -77,9 +47,7 @@ function makeIcicle() {
       .attr('dx', 4)
       .attr('dy', 14)
       .attr('fill-opacity',0)
-      .text(function(d) {
-        return +labelVisible(d);
-      })
+      .text(d => +labelVisible(d))
 
     text.append("tspan")
       .text(d => d.data.name)
@@ -87,7 +55,7 @@ function makeIcicle() {
 
     const tspan = text.append("tspan")
       .attr("fill-opacity", d => labelVisible(d) * 0.7)
-      .text(d => ` ${format(d.value)}`);
+      //.text(d => ` ${format(d.value)}`);
 
 
     cell.append("title")
