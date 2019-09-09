@@ -2,7 +2,7 @@ function makeIcicle() {
 
   const height = 700
   const width  = 900
-  const mapDepth = 4
+  const mapDepth = 3
   let rootNode
 
   format = d3.format(",d")
@@ -14,7 +14,7 @@ function makeIcicle() {
           .sum(d => d.value)
           .sort((a, b) => b.height - a.height || b.value - a.value);
       return d3.partition()
-          .size([height, (root.height + 1) * width / 3])
+          .size([height, (root.height + 1) * width / mapDepth])
         (root);
     }
 
