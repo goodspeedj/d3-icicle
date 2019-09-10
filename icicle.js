@@ -2,7 +2,7 @@ function makeIcicle() {
 
   const height = 700
   const width  = 900
-  const mapDepth = 3
+  const mapDepth = 4
   let rootNode
 
   format = d3.format(",d")
@@ -12,7 +12,7 @@ function makeIcicle() {
     partition = data => {
       const root = d3.hierarchy(data)
           .sum(d => d.value)
-          .sort((a, b) => b.height - a.height || b.value - a.value);
+          .sort((a, b) => b.height - a.height || b.value - a.value)
       return d3.partition()
           .size([height, (root.height + 1) * width / mapDepth])
         (root);
@@ -28,17 +28,25 @@ function makeIcicle() {
       .selectAll('g')
       .data(rootNode.descendants(), d => d.data.name)
       .join("g")
-        .attr("transform", d => `translate(${d.y0},${d.x0})`);
+        .attr("transform", d => `translate(${d.y0},${d.x0})`)
 
 
     const rect = cell
       .append('rect')
       .attr("width", d => d.y1 - d.y0 - 1)
       .attr("height", d => rectHeight(d))
-      .attr("fill-opacity", 0.6)
+      .attr("fill-opacity", 0.7)
       .attr("fill", d => d3.interpolateRdYlGn(d.data.health))
       .style("cursor", "pointer")
-      .on("click", clicked);
+      .on("click", clicked)
+      .on('mouseover', function (d) {
+        d3.select(this)
+          .attr('fill-opacity', '1')
+          .attr('style', 'cursor: pointer')
+      })
+      .on('mouseout', function (d) {
+        d3.select(this).attr('fill-opacity', '0.7')
+      })
 
     // lable the rectangles
     const text = cell
@@ -59,11 +67,11 @@ function makeIcicle() {
 
 
     cell.append("title")
-      .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
+      .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`)
 
 
     function clicked(p) {
-      focus = focus === p ? p = p.parent : p;
+      focus = focus === p ? p = p.parent : p
 
       rootNode.each(d => d.target = {
         x0: (d.x0 - p.x0) / (p.x1 - p.x0) * height,
@@ -73,25 +81,21 @@ function makeIcicle() {
       });
 
       const t = cell.transition().duration(750)
-          .attr("transform", d => `translate(${d.target.y0},${d.target.x0})`);
+          .attr("transform", d => `translate(${d.target.y0},${d.target.x0})`)
 
-      rect.transition(t).attr("height", d => rectHeight(d.target));
+      rect.transition(t).attr("height", d => rectHeight(d.target))
+
       text
         .transition(t)
         .attr("fill-opacity", d => +labelVisible(d.target))
         .text(d => d.data.name)
-      tspan.transition(t).attr("fill-opacity", d => labelVisible(d.target) * 0.7);
+      tspan.transition(t).attr("fill-opacity", d => labelVisible(d.target) * 0.7)
     }
 
   });
 
-  function rectHeight(d) {
-    return d.x1 - d.x0 - Math.min(1, (d.x1 - d.x0) / 2);
-  }
+  const rectHeight = d => d.x1 - d.x0 - Math.min(1, (d.x1 - d.x0) / 2)
 
-  function labelVisible(d) {
-    return d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16;
-  }
-
+  const labelVisible = d => d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16
 
 }
